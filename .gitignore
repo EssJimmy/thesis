@@ -1,0 +1,7 @@
+Include
+lib
+__pycache__
+scripts
+pyvenv.cfg
+.vscode
+xArm-Python-SDK
