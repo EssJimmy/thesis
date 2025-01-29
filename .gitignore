@@ -5,3 +5,7 @@ scripts
 pyvenv.cfg
 .vscode
 xArm-Python-SDK
+inv
+libs
+share
+yolo
