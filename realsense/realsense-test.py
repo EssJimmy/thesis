@@ -1,10 +1,10 @@
 from depthcamera import get_pipe, get_streams
 import cv2 as cv
 
-pipe = get_pipe()
+pipe, align = get_pipe()
 
 while True:
-    color_image, depth_image = get_streams(camera_pipe=pipe)
+    color_image, depth_image = get_streams(camera_pipe=pipe, aligned=align)
     
     depth_map = cv.applyColorMap(cv.convertScaleAbs(depth_image, alpha=0.5), cv.COLORMAP_JET)
 
