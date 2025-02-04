@@ -1,5 +1,7 @@
 Include
 lib
+lib64
+bin
 __pycache__
 scripts
 pyvenv.cfg
