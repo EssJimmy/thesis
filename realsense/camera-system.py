@@ -27,7 +27,7 @@ def get_cam_stream_model(model_name: str) -> None:
             break
 
         cam_annotator = Annotator(cam_frame, line_width=2)
-        cam_results = model.track(cam_frame, stream=True, persist=True)
+        cam_results = model.track(cam_frame, persist=True)
         __create_mask(cam_results, cam_annotator)
         cv.imshow("cam", cam_frame)
 
@@ -39,8 +39,8 @@ def get_cam_stream_model(model_name: str) -> None:
 
 
 def main() -> None:
-    get_depth_stream_model()
-    get_cam_stream_model()
+    get_depth_stream_model("./realsense/yolo/yolo11x-seg.pt")
+#    get_cam_stream_model()
 
 
 if __name__ == '__main__':
