@@ -4,15 +4,11 @@ import cv2 as cv
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
 
-def __create_mask(results, annotator) -> None:
-    if results[0].boxes.id is not None and results[0].masks is not None:
-        masks = results[0].masks.xy
-        track_ids = results[0].boxes.id.int().cpu().tolist()
-
-        for mask, track_id in zip(masks, track_ids):
-            color = colors(int(track_id), True)
-            txt_color = annotator.get_txt_color(color)
-            annotator.seg_bbox(mask=mask, mask_color=color, label=str(track_id), txt_color=txt_color)
+def __create_mask(annotator, masks, track_ids) -> None:
+    for mask, track_id in zip(masks, track_ids):
+        color = colors(int(track_id), True)
+        txt_color = annotator.get_txt_color(color)
+        annotator.seg_bbox(mask=mask, mask_color=color, label=str(track_id), txt_color=txt_color)
 
 
 def __get_pipe() -> tuple:
@@ -54,9 +50,19 @@ def get_depth_stream_model(model_name: str) -> None:
         color_annotator = Annotator(color_image, line_width=2)
         depth_annotator = Annotator(depth_map, line_width=2)
 
-        realsense_results = model.track(color_image, stream=True, persist=True)
-        __create_mask(realsense_results, color_annotator)
-        __create_mask(realsense_results, depth_annotator)
+        realsense_results = model.track(color_image, persist=True)
+        if realsense_results[0].boxes.id is not None and realsense_results[0].masks is not None:
+            masks = realsense_results[0].masks.xy
+            track_ids = realsense_results[0].boxes.id.int().cpu().tolist()
+            aggregate = zip(masks, track_ids)
+            x, y = map(int, np.ndarray.mean(list(aggregate)[0][0], axis=0))
+            distance_mm = depth_image[y, x]
+    
+            print(distance_mm)
+            cv.putText(color_image, f"{distance_mm} mm", (x, y-10), 0, 1, (0, 0, 255), 2)
+            cv.circle(color_image, (x, y), 8, (0, 0, 255), -1)
+            __create_mask(color_annotator, masks, track_ids)
+            __create_mask(depth_annotator, masks, track_ids)
 
         cv.imshow("rgb", color_image)
         cv.imshow("depth", depth_map)
