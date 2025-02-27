@@ -14,7 +14,7 @@ else:
     try:
         from configparser import ConfigParser
         parser = ConfigParser()
-        parser.read(os.path.join(DIR, "robot.conf\\"))
+        parser.read(os.path.join(DIR, "robot.conf"))
         ip = parser.get('xArm', 'ip')
     except:
         ip = input('Please input the xArm ip address:')
