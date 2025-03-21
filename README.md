@@ -14,3 +14,9 @@
 * Hacer la montura de la cámara para montarla en el robot
 * Definir los objetivos central y particulares de la tesis
 
+# Notas
+## UFACTORY
+The robot has callbacks, this should allow me to play with the servo motors like with the haptic touch, implementing my own controller at the end. The project shall be called from the active directory, I'll see if I can do something to include a path dependency to further simplify the project and not have that serious of a `.gitignore`
+
+## RealSense
+Only works properly with 10Gb+ USB speeds and cables, finding that out was a pain in the ass. Still need to figure out how to run different threaded models so that I can have one thread for each camera and one for the realsense.

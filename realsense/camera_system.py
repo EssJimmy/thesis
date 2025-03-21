@@ -38,10 +38,10 @@ def get_cam_stream_model(model_name: str) -> None:
     cv.destroyAllWindows()
 
 
-def main() -> None:
-    get_depth_stream_model("./realsense/yolo/yolo11x-seg.pt")
+def get_streaming_models(model_path: str = "./realsense/yolo/yolo11x-seg.pt") -> None:
+    get_depth_stream_model(model_path)
 #    get_cam_stream_model()
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    get_streaming_models()

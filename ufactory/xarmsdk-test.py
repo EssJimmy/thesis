@@ -1,41 +1,68 @@
 import os
 import time
 import sys
+import numpy as np
+import time
 
 DIR = os.path.dirname(__file__) 
 SDK_DIR = os.path.join(DIR, 'xArm-Python-SDK\\')
 sys.path.append(SDK_DIR)
 
-from xarm.wrapper.xarm_api import XArmAPI
+REALSENSE_DIR = os.path.abspath(os.path.join(DIR, "..\\realsense"))
+print(REALSENSE_DIR)
+sys.path.append(REALSENSE_DIR)
 
-if len(sys.argv) >= 2:
-    ip = sys.argv[1]
-else:
-    try:
-        from configparser import ConfigParser
-        parser = ConfigParser()
-        parser.read(os.path.join(DIR, "robot.conf"))
-        ip = parser.get('xArm', 'ip')
-    except:
-        ip = input('Please input the xArm ip address:')
-        if not ip:
-            print('input error, exit')
-            sys.exit(1)
+q_d = 2*np.pi
+t_0 = time.time_ns
 
-def hangle_err_warn_changed(item):
-    print('ErrorCode: {}, WarnCode: {}'.format(item['error_code'], item['warn_code']))
+from xarm.wrapper import XArmAPI
+from realsense import camera_system
 
-arm = XArmAPI(ip, do_not_open=True)
-arm.register_error_warn_changed_callback(hangle_err_warn_changed)
-arm.connect()
+def load_robot_config():
+    if len(sys.argv) >= 2:
+        ip = sys.argv[1]
+    else:
+        try:
+            from configparser import ConfigParser
+            parser = ConfigParser()
+            parser.read(os.path.join(DIR, "robot.conf"))
+            ip = parser.get('xArm', 'ip')
+        except:
+            ip = input('Please input the xArm ip address:')
+            if not ip:
+                print('input error, exit')
+                sys.exit(1)
 
-# enable motion
-arm.motion_enable(enable=True)
-# set mode: position control mode
-arm.set_mode(0)
-# set state: sport state
-arm.set_state(state=0)
+    return ip
 
-time.sleep(10)
+def __callback_report_location(item):
+    print('location report:', item)
 
-arm.disconnect()
+def main() -> None:
+    ip = load_robot_config()
+    arm = XArmAPI(ip)
+    arm.register_report_location_callback(callback=__callback_report_location)
+
+    arm.motion_enable(enable=True)
+    arm.clean_error()
+    arm.set_mode(0)
+    arm.set_state(state=0)
+    time.sleep(0.2)
+    arm.move_gohome(wait=True)
+    
+    i = 0
+    found = False
+    while not found:
+        arm.set_servo_angle(angle=[45*i, 0, 0, 0, 90, 0], speed=50, wait=True)
+        time.sleep(3)
+
+        i += 1
+        if i == 8:
+            found = True
+
+    arm.move_gohome(wait=True)
+    arm.disconnect()
+
+
+if __name__ == "__main__":
+    main()
