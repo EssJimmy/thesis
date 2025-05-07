@@ -51,16 +51,24 @@ def get_depth_stream_model(model_name: str) -> None:
         depth_annotator = Annotator(depth_map, line_width=2)
 
         realsense_results = model.track(color_image, persist=True)
+        i = 0
         if realsense_results[0].boxes.id is not None and realsense_results[0].masks is not None:
-            masks = realsense_results[0].masks.xy
-            track_ids = realsense_results[0].boxes.id.int().cpu().tolist()
+            if i > len(realsense_results):
+                i = 0
+            
+            masks = realsense_results[i].masks.xy
+            track_ids = realsense_results[i].boxes.id.int().cpu().tolist()
             aggregate = zip(masks, track_ids)
-            x, y = map(int, np.ndarray.mean(list(aggregate)[0][0], axis=0))
+            x, y = map(int, np.ndarray.mean(list(aggregate)[i][0], axis=0))
             distance_mm = depth_image[y, x]
-    
             print(distance_mm)
-            cv.putText(color_image, f"{distance_mm} mm", (x, y-10), 0, 1, (0, 0, 255), 2)
-            cv.circle(color_image, (x, y), 8, (0, 0, 255), -1)
+
+            if distance_mm < 850:
+                cv.putText(color_image, f"{distance_mm} mm", (x, y-10), 0, 1, (0, 0, 255), 2)
+                cv.circle(color_image, (x, y), 8, (0, 0, 255), -1)
+            else:
+                i += 1
+
             __create_mask(color_annotator, masks, track_ids)
             __create_mask(depth_annotator, masks, track_ids)
 
