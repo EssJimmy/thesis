@@ -6,7 +6,7 @@ DIR = os.path.dirname(__file__)
 SDK_DIR = os.path.join(DIR, 'xArm-Python-SDK\\')
 sys.path.append(SDK_DIR)
 
-from xarm.wrapper.xarm_api import XArmAPI
+from xarm.wrapper import XArmAPI
 
 if len(sys.argv) >= 2:
     ip = sys.argv[1]

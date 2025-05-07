@@ -39,8 +39,9 @@ def get_cam_stream_model(model_name: str) -> None:
 
 
 def main() -> None:
-    get_depth_stream_model("./realsense/yolo/yolo11x-seg.pt")
-#    get_cam_stream_model()
+    model = "./realsense/yolo/yolo11x-seg.pt"
+    get_depth_stream_model(model)
+    #get_cam_stream_model(model)
 
 
 if __name__ == '__main__':
