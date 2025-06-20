@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package thesis-grpc;
+
+service DepthCamera {
+    rpc ObjectDetection(ObjectDetectionRequest) returns (ObjectDetectionResponse);
+    rpc GetDepthImage(DepthRequest) returns (DepthResponse);
+}
+
+message ObjectDetectionRequest {
+    string camera_id = 1; // Identifier for the camera
+}
+
+message ObjectDetectionResponse {
+    bool success = 1; // Indicates if the object detection was successful
+}
+
+message DepthRequest {
+    string camera_id = 1; // Identifier for the depth camera
+}
+
+message DepthResponse {
+    float depth_values = 1; // Depth values in meters
+    string timestamp = 2; // Timestamp of the depth image in ISO 8601 format
+    sint32 x_coord = 3; // How far is the object along the x-axis
+    sint32 y_coord = 4; // How far is the object along the y-axis
+}

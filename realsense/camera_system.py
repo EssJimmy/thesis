@@ -14,7 +14,7 @@ def __create_mask(results, annotator) -> None:
             annotator.seg_bbox(mask=mask, mask_color=color, label=str(track_id), txt_color=txt_color)
 
 
-def __get_cam_stream_model(model_name: str) -> None:
+def get_cam_stream_model(model_name: str) -> None:
     cam = cv.VideoCapture(0) # cv.VideoCapture(1, cv.CAP_DSHOW) in windows
     cam.set(cv.CAP_PROP_FRAME_WIDTH, 640)
     cam.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
