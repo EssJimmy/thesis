@@ -3,20 +3,19 @@ import time
 import sys
 import numpy as np
 import time
+from xarm.wrapper import XArmAPI
 
 DIR = os.path.dirname(__file__) 
-SDK_DIR = os.path.join(DIR, 'xArm-Python-SDK\\')
+SDK_DIR = os.path.join(DIR, 'xArm-Python-SDK/')
 sys.path.append(SDK_DIR)
 
-REALSENSE_DIR = os.path.abspath(os.path.join(DIR, "..\\realsense"))
-print(REALSENSE_DIR)
-sys.path.append(REALSENSE_DIR)
+REALSENSE_DIR = os.path.abspath(os.path.join(DIR, "../realsense"))
+sys.path.insert(1, REALSENSE_DIR)
 
 q_d = 2*np.pi
 t_0 = time.time_ns
 
-from xarm.wrapper import XArmAPI
-from realsense import camera_system
+from camera_system import get_streaming_models
 
 def load_robot_config():
     if len(sys.argv) >= 2:
@@ -50,7 +49,9 @@ def main() -> None:
     time.sleep(0.2)
     arm.move_gohome(wait=True)
     
-    i = 0
+
+    arm.set_servo_angle(angle=[0, 0, 0, 0, 90, 0], speed=50, wait=True)
+    """i = 0
     found = False
     while not found:
         arm.set_servo_angle(angle=[45*i, 0, 0, 0, 90, 0], speed=50, wait=True)
@@ -60,7 +61,7 @@ def main() -> None:
         if i == 8:
             found = True
 
-    arm.move_gohome(wait=True)
+    arm.move_gohome(wait=True)"""
     arm.disconnect()
 
 

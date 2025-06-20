@@ -41,7 +41,7 @@ def __get_streams(camera_pipe: object, aligned) -> tuple:
 def get_depth_stream_model(model_name: str) -> None:
     pipe, align = __get_pipe()
     model = YOLO(model_name)
-    model.to('cuda')
+    #model.to('cuda')
 
     while True:
         color_image, depth_image = __get_streams(pipe, align)
