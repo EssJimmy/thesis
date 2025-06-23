@@ -1,18 +1,18 @@
 # TODO
-* [ ] Trabajar en el software de reconocimiento de piezas
-    * [X] Hacer que las cámaras funcionen síncronamente
-    * [ ] Reconocer el punto medio que sería el robot y su alcance máximo
-    * [X] Ver si se puede hacer con convolución, evitar IA
-* [ ] Empezar a planear el tipo de controlador a usarse
-    * Probablemente sea un controlador adaptable, José me vendió la idea
 * [ ] Trabajar en el API que interconectará todo
-    * Python o C++
+* [ ] Análisis de manipulabilidad
+* [ ] Análisis del funcionamiento de la cámara
 
 # Lo que he hecho
 * Asegurar la conexión entre la computadora y la cámara RealSense 435i
 * Establecer los parámetros necesarios para que la cámara funcione correctamente
 * Hacer la montura de la cámara para montarla en el robot
 * Definir los objetivos central y particulares de la tesis
+* Definir el controlador a usar
+* Crear el modelo de segmentación de imágenes y unirlo con la medición de distancias
+* Crear la conexión computadora-robot, todo desde un mismo proyecto de Python
+* Empezar a definir la conexión entre los dos sistemas
+
 
 # Notas
 ## UFACTORY
@@ -20,3 +20,7 @@ The robot has callbacks, this should allow me to play with the servo motors like
 
 ## RealSense
 Only works properly with 10Gb+ USB speeds and cables, finding that out was a pain in the ass. Still need to figure out how to run different threaded models so that I can have one thread for each camera and one for the realsense.
+
+## gRPC API
+The thing works wonder, but I'm thinking I could go really far and make this into a fully distributed system if I can just get a hold of some static IP's from the DSTI to open specific ports for communication, it would definitely be interesting and it would allow me to run the 'n' model instead of the 'x' model of YOLO11.
+
