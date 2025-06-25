@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service NormalCamera {
+    rpc ObjectDetection(ObjectDetectionRequest) returns (ObjectDetectionResponse);
+}
+
+message ObjectDetectionRequest {
+    uint32 camera_id = 1; // Identifier for the camera
+}
+
+message ObjectDetectionResponse {
+    bool success = 1; // Indicates if the object detection was successful
+}

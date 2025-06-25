@@ -1,14 +1,11 @@
 syntax = "proto3";
 
-package thesis-grpc;
-
 service DepthCamera {
     rpc ObjectDetection(ObjectDetectionRequest) returns (ObjectDetectionResponse);
     rpc GetDepthImage(DepthRequest) returns (DepthResponse);
 }
 
 message ObjectDetectionRequest {
-    string camera_id = 1; // Identifier for the camera
 }
 
 message ObjectDetectionResponse {
@@ -16,7 +13,6 @@ message ObjectDetectionResponse {
 }
 
 message DepthRequest {
-    string camera_id = 1; // Identifier for the depth camera
 }
 
 message DepthResponse {

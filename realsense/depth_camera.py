@@ -38,7 +38,7 @@ def __get_streams(camera_pipe: object, aligned) -> tuple:
     return color_image, depth_image
 
 
-def get_depth_stream_model(model_name: str) -> None:
+def get_depth_stream_model(model_name: str = "./realsense/yolo/yolo11n-seg.pt") -> None:
     pipe, align = __get_pipe()
     model = YOLO(model_name)
     #model.to('cuda')
@@ -79,3 +79,7 @@ def get_depth_stream_model(model_name: str) -> None:
             break
     
     pipe.stop()
+
+
+if __name__ == "__main__":
+    get_depth_stream_model()

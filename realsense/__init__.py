@@ -1,4 +1,4 @@
-__all__ = ["camera_system", "depthcamera"]
+__all__ = ["normal_camera", "depth_camera"]
 
-from . import camera_system
-from . import depthcamera
+from . import normal_camera
+from . import depth_camera
