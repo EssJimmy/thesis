@@ -63,11 +63,13 @@ def get_depth_stream_model(model_name: str = "./realsense/yolo/yolo11n-seg.pt") 
             distance_mm = depth_image[y, x]
             print(distance_mm)
 
+            """
             if distance_mm < 850:
                 cv.putText(color_image, f"{distance_mm} mm", (x, y-10), 0, 1, (0, 0, 255), 2)
                 cv.circle(color_image, (x, y), 8, (0, 0, 255), -1)
             else:
                 i += 1
+            """
 
             __create_mask(color_annotator, masks, track_ids)
             __create_mask(depth_annotator, masks, track_ids)

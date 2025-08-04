@@ -1,4 +1,5 @@
 # TODO
+* [ ] Añadir un set de objetos revisados, para si ya se encontró el objeto no estar constantemente checándolo
 * [ ] Trabajar en el API que interconectará todo
 * [ ] Análisis de manipulabilidad
 * [ ] Análisis del funcionamiento de la cámara

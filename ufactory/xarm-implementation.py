@@ -21,6 +21,8 @@ from xarm.wrapper import XArmAPI
 from realsense.normal_camera import get_cam_stream_model
 from grpc_cv_service.normal_camera_service import normal_camera_pb2_grpc as n_grpc
 from grpc_cv_service.normal_camera_service import normal_camera_pb2 as n_pb2
+from grpc_cv_service.depth_camera_service import depth_camera_pb2_grpc as d_grpc
+from grpc_cv_service.depth_camera_service import depth_camera_pb2 as d_pb2
 
 def __callback_report_location(item):
     print('location report:', item)
@@ -42,17 +44,19 @@ def load_robot_config():
 
     return ip
 
-def object_not_in_main_camera(arm: Any) -> None:    
+def object_not_in_main_camera(arm: Any, channel: grpc.Channel) -> None:    
     arm.move_gohome(wait=True)
     arm.set_servo_angle(angle=[0, 0, 0, 0, 90, 0], speed=50, wait=True)
-    i = 0
-    with grpc.insecure_channel('localhost:50051') as channel:    
-        stub = n_grpc.NormalCameraStub(channel)
+    i = 0    
+    
+    n_stub = n_grpc.NormalCameraStub(channel)
+    d_stub = d_grpc.DepthCameraStub(channel)
+    if n_stub.ObjectDetection(n_pb2.ObjectDetectionRequest(camera_id=0)):
         while not found:
             arm.set_servo_angle(angle=[45*i, 0, 0, 0, 90, 0], speed=50, wait=True)
             time.sleep(3)
             
-            found = stub.ObjectDetection(n_pb2.ObjectDetectionRequest(camera_id=0))
+            found = d_stub.ObjectDetection(d_pb2.ObjectDetectionRequest())
             i += 1
             if i == 8:
                 break
