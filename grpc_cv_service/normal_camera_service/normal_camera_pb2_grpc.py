@@ -3,9 +3,10 @@
 import grpc
 import warnings
 
-import normal_camera_pb2 as normal__camera__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from . import normal_camera_pb2 as normal__camera__pb2
 
-GRPC_GENERATED_VERSION = '1.73.0'
+GRPC_GENERATED_VERSION = '1.75.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -35,9 +36,9 @@ class NormalCameraStub(object):
             channel: A grpc.Channel.
         """
         self.ObjectDetection = channel.unary_unary(
-                '/NormalCamera/ObjectDetection',
+                '/normal_camera.NormalCamera/ObjectDetection',
                 request_serializer=normal__camera__pb2.ObjectDetectionRequest.SerializeToString,
-                response_deserializer=normal__camera__pb2.ObjectDetectionResponse.FromString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
 
 
@@ -56,13 +57,13 @@ def add_NormalCameraServicer_to_server(servicer, server):
             'ObjectDetection': grpc.unary_unary_rpc_method_handler(
                     servicer.ObjectDetection,
                     request_deserializer=normal__camera__pb2.ObjectDetectionRequest.FromString,
-                    response_serializer=normal__camera__pb2.ObjectDetectionResponse.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'NormalCamera', rpc_method_handlers)
+            'normal_camera.NormalCamera', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('NormalCamera', rpc_method_handlers)
+    server.add_registered_method_handlers('normal_camera.NormalCamera', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -83,9 +84,9 @@ class NormalCamera(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/NormalCamera/ObjectDetection',
+            '/normal_camera.NormalCamera/ObjectDetection',
             normal__camera__pb2.ObjectDetectionRequest.SerializeToString,
-            normal__camera__pb2.ObjectDetectionResponse.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

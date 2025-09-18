@@ -3,26 +3,30 @@ import time
 import sys
 import time
 import grpc
+import logging
 from typing import Any
+from concurrent import futures
 
 found = False
 
-DIR = os.path.dirname(__file__) 
-SDK_DIR = os.path.join(DIR, 'xArm-Python-SDK/')
-sys.path.append(SDK_DIR)
+DIR = os.path.dirname(os.path.abspath(__file__))
 
-REALSENSE_DIR = os.path.abspath(os.path.join(DIR, "../realsense"))
-sys.path.append(REALSENSE_DIR)
-
-GRPC_DIR = os.path.abspath(os.path.join(DIR, "../grpc"))
-sys.path.append(GRPC_DIR)
+# Add parent directory to path so grpc_cv_service package can be found
+PARENT_DIR = os.path.abspath(os.path.join(DIR, ".."))
+sys.path.insert(0, PARENT_DIR)
 
 from xarm.wrapper import XArmAPI
-from realsense.normal_camera import get_cam_stream_model
-from grpc_cv_service.normal_camera_service import normal_camera_pb2_grpc as n_grpc
-from grpc_cv_service.normal_camera_service import normal_camera_pb2 as n_pb2
 from grpc_cv_service.depth_camera_service import depth_camera_pb2_grpc as d_grpc
-from grpc_cv_service.depth_camera_service import depth_camera_pb2 as d_pb2
+
+class RobotVision(d_grpc.DepthCameraServicer):
+
+    def SendDepthImage(self, request, context):
+        print(f"Received depth data: {request.depth_values}mm at ({request.x_coord}, {request.y_coord})")
+        # TODO: Implement robot logic here
+        from google.protobuf import empty_pb2
+        return empty_pb2.Empty()
+        
+
 
 def __callback_report_location(item):
     print('location report:', item)
@@ -44,6 +48,7 @@ def load_robot_config():
 
     return ip
 
+"""
 def object_not_in_main_camera(arm: Any, channel: grpc.Channel) -> None:    
     arm.move_gohome(wait=True)
     arm.set_servo_angle(angle=[0, 0, 0, 0, 90, 0], speed=50, wait=True)
@@ -62,6 +67,7 @@ def object_not_in_main_camera(arm: Any, channel: grpc.Channel) -> None:
                 break
 
     arm.move_gohome(wait=True)
+"""
 
 def connect_to_robot() -> Any|None:
     ip = load_robot_config()
@@ -73,7 +79,20 @@ def connect_to_robot() -> Any|None:
         return None
 
 
+def serve():
+    port = "50051"    
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    d_grpc.add_DepthCameraServicer_to_server(RobotVision(), server)
+    server.add_insecure_port("[::]:" + port)
+    server.start()
+    print("Server started, listening on " + port)
+    server.wait_for_termination()
+
 if __name__ == "__main__":
+    logging.basicConfig()
+    serve()
+    """
     arm = connect_to_robot()
     if arm:
         object_not_in_main_camera(arm)
+    """

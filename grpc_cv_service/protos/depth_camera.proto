@@ -1,23 +1,13 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
+package depth_camera;
 
 service DepthCamera {
-    rpc ObjectDetection(ObjectDetectionRequest) returns (ObjectDetectionResponse);
-    rpc GetDepthImage(DepthRequest) returns (DepthResponse);
-}
-
-message ObjectDetectionRequest {
-}
-
-message ObjectDetectionResponse {
-    bool success = 1; // Indicates if the object detection was successful
+    rpc SendDepthImage(DepthRequest) returns (google.protobuf.Empty);
 }
 
 message DepthRequest {
-}
-
-message DepthResponse {
     float depth_values = 1; // Depth values in meters
-    string timestamp = 2; // Timestamp of the depth image in ISO 8601 format
-    sint32 x_coord = 3; // How far is the object along the x-axis
-    sint32 y_coord = 4; // How far is the object along the y-axis
+    uint32 x_coord = 2; // How far is the object along the x-axis
+    uint32 y_coord = 3; // How far is the object along the y-axis
 }

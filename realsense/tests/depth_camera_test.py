@@ -1,8 +1,17 @@
+import os
+import sys
 import pyrealsense2 as rs
 import numpy as np
 import cv2 as cv
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
+
+DIR = os.path.dirname(__file__)
+GRPC_DIR = os.path.abspath(os.path.join(DIR, "../grpc_cv_service"))
+sys.path.append(GRPC_DIR)
+
+import grpc_cv_service.depth_camera_service.depth_camera_pb2 as depth_camera_pb2
+import grpc_cv_service.depth_camera_service.depth_camera_pb2_grpc as depth_camera_pb2_grpc
 
 def __create_mask(annotator, masks, track_ids) -> None:
     for mask, track_id in zip(masks, track_ids):
@@ -38,7 +47,7 @@ def __get_streams(camera_pipe: object, aligned) -> tuple:
     return color_image, depth_image
 
 
-def get_depth_stream_model(model_name: str = "./realsense/yolo/yolo11n-seg.pt") -> None:
+def get_depth_stream_model(model_name: str = "/home/jimmy/Documents/thesis/realsense/yolo/yolo11x-seg.pt") -> None:
     pipe, align = __get_pipe()
     model = YOLO(model_name)
     #model.to('cuda')
@@ -63,13 +72,13 @@ def get_depth_stream_model(model_name: str = "./realsense/yolo/yolo11n-seg.pt") 
             distance_mm = depth_image[y, x]
             print(distance_mm)
 
-            """
+            
             if distance_mm < 850:
                 cv.putText(color_image, f"{distance_mm} mm", (x, y-10), 0, 1, (0, 0, 255), 2)
                 cv.circle(color_image, (x, y), 8, (0, 0, 255), -1)
             else:
                 i += 1
-            """
+            
 
             __create_mask(color_annotator, masks, track_ids)
             __create_mask(depth_annotator, masks, track_ids)

@@ -3,9 +3,10 @@
 import grpc
 import warnings
 
-import depth_camera_pb2 as depth__camera__pb2
+from . import depth_camera_pb2 as depth__camera__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
-GRPC_GENERATED_VERSION = '1.73.0'
+GRPC_GENERATED_VERSION = '1.75.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -34,28 +35,17 @@ class DepthCameraStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ObjectDetection = channel.unary_unary(
-                '/DepthCamera/ObjectDetection',
-                request_serializer=depth__camera__pb2.ObjectDetectionRequest.SerializeToString,
-                response_deserializer=depth__camera__pb2.ObjectDetectionResponse.FromString,
-                _registered_method=True)
-        self.GetDepthImage = channel.unary_unary(
-                '/DepthCamera/GetDepthImage',
+        self.SendDepthImage = channel.unary_unary(
+                '/depth_camera.DepthCamera/SendDepthImage',
                 request_serializer=depth__camera__pb2.DepthRequest.SerializeToString,
-                response_deserializer=depth__camera__pb2.DepthResponse.FromString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
 
 
 class DepthCameraServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def ObjectDetection(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def GetDepthImage(self, request, context):
+    def SendDepthImage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -64,21 +54,16 @@ class DepthCameraServicer(object):
 
 def add_DepthCameraServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'ObjectDetection': grpc.unary_unary_rpc_method_handler(
-                    servicer.ObjectDetection,
-                    request_deserializer=depth__camera__pb2.ObjectDetectionRequest.FromString,
-                    response_serializer=depth__camera__pb2.ObjectDetectionResponse.SerializeToString,
-            ),
-            'GetDepthImage': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetDepthImage,
+            'SendDepthImage': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendDepthImage,
                     request_deserializer=depth__camera__pb2.DepthRequest.FromString,
-                    response_serializer=depth__camera__pb2.DepthResponse.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'DepthCamera', rpc_method_handlers)
+            'depth_camera.DepthCamera', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('DepthCamera', rpc_method_handlers)
+    server.add_registered_method_handlers('depth_camera.DepthCamera', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -86,7 +71,7 @@ class DepthCamera(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def ObjectDetection(request,
+    def SendDepthImage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -99,36 +84,9 @@ class DepthCamera(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/DepthCamera/ObjectDetection',
-            depth__camera__pb2.ObjectDetectionRequest.SerializeToString,
-            depth__camera__pb2.ObjectDetectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def GetDepthImage(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/DepthCamera/GetDepthImage',
+            '/depth_camera.DepthCamera/SendDepthImage',
             depth__camera__pb2.DepthRequest.SerializeToString,
-            depth__camera__pb2.DepthResponse.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
