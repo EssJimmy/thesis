@@ -1,0 +1,12 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package normal_camera;
+
+service NormalCamera {
+    rpc ObjectDetection(ObjectDetectionRequest) returns (google.protobuf.Empty);
+}
+
+message ObjectDetectionRequest {
+    uint32 camera_id = 1; // Identifier for the camera
+    bool success = 2; // Indicates if the object detection was successful
+}
