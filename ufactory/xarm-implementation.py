@@ -1,10 +1,10 @@
 import os
-import time
 import sys
 import time
 import grpc
 import logging
 from typing import Any
+from datetime import datetime
 from concurrent import futures
 
 found = False
@@ -21,7 +21,7 @@ from grpc_cv_service.depth_camera_service import depth_camera_pb2_grpc as d_grpc
 class RobotVision(d_grpc.DepthCameraServicer):
 
     def SendDepthImage(self, request, context):
-        print(f"Received depth data: {request.depth_values}mm at ({request.x_coord}, {request.y_coord})")
+        print(f"""{datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]}: Received depth data: {request.depth_values}mm at ({request.x_coord}, {request.y_coord})""")
         # TODO: Implement robot logic here
         from google.protobuf import empty_pb2
         return empty_pb2.Empty()
