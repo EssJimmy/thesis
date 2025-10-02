@@ -7,8 +7,6 @@ from typing import Any
 from datetime import datetime
 from concurrent import futures
 
-found = False
-
 DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Add parent directory to path so grpc_cv_service package can be found
@@ -17,19 +15,6 @@ sys.path.insert(0, PARENT_DIR)
 
 from xarm.wrapper import XArmAPI
 from grpc_cv_service.depth_camera_service import depth_camera_pb2_grpc as d_grpc
-
-class RobotVision(d_grpc.DepthCameraServicer):
-
-    def SendDepthImage(self, request, context):
-        print(f"""{datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]}: Received depth data: {request.depth_values}mm at ({request.x_coord}, {request.y_coord})""")
-        # TODO: Implement robot logic here
-        from google.protobuf import empty_pb2
-        return empty_pb2.Empty()
-        
-
-
-def __callback_report_location(item):
-    print('location report:', item)
 
 def load_robot_config():
     if len(sys.argv) >= 2:
@@ -48,38 +33,27 @@ def load_robot_config():
 
     return ip
 
-"""
-def object_not_in_main_camera(arm: Any, channel: grpc.Channel) -> None:    
-    arm.move_gohome(wait=True)
-    arm.set_servo_angle(angle=[0, 0, 0, 0, 90, 0], speed=50, wait=True)
-    i = 0    
-    
-    n_stub = n_grpc.NormalCameraStub(channel)
-    d_stub = d_grpc.DepthCameraStub(channel)
-    if n_stub.ObjectDetection(n_pb2.ObjectDetectionRequest(camera_id=0)):
-        while not found:
-            arm.set_servo_angle(angle=[45*i, 0, 0, 0, 90, 0], speed=50, wait=True)
-            time.sleep(3)
-            
-            found = d_stub.ObjectDetection(d_pb2.ObjectDetectionRequest())
-            i += 1
-            if i == 8:
-                break
+ip = load_robot_config()
+arm = XArmAPI(ip)
+arm.motion_enable(enable=True)
+arm.clean_error()
+arm.set_mode(0)
+arm.set_state(0)
+time.sleep(0.2)
+arm.move_gohome(wait=True)
 
-    arm.move_gohome(wait=True)
-"""
+class RobotVision(d_grpc.DepthCameraServicer):
 
-def connect_to_robot() -> Any|None:
-    ip = load_robot_config()
-    try:
-        arm = XArmAPI(ip)
-        arm.register_report_location_callback(callback=__callback_report_location)
-        return arm
-    except:
-        return None
-
+    def SendDepthImage(self, request, context):
+        print(f"""{datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]}: Received depth data: {request.depth_values}mm at ({request.x_coord}, {request.y_coord})""")
+        arm.set_position(y=request.y_coord, z=request.x_coord, speed=100, wait=True)
+        print(arm.get_position())
+        from google.protobuf import empty_pb2
+        return empty_pb2.Empty()
+        
 
 def serve():
+    arm.set_servo_angle(angle=[0, 0, 0, 0, 90, 0], speed=50, wait=True)
     port = "50051"    
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     d_grpc.add_DepthCameraServicer_to_server(RobotVision(), server)
