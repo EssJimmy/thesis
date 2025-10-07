@@ -1,3 +1,4 @@
+```python
 import os
 import sys
 import time
@@ -70,3 +71,5 @@ if __name__ == "__main__":
     if arm:
         object_not_in_main_camera(arm)
     """
+
+```
